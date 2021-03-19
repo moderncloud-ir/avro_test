@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "name": "cpx",
+    "fields" : [
+        {"name": "re", "type": "string"},
+        {"name": "im", "type" : "string"}
+    ]
+}
+
