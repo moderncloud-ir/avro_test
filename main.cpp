@@ -9,6 +9,7 @@
 #include <avro/Encoder.hh>
 #include <avro/Generic.hh>
 #include <avro/GenericDatum.hh>
+#include <avro/Parser.hh>
 #include <avro/Reader.hh>
 #include <avro/ResolverSchema.hh>
 #include <avro/Schema.hh>
@@ -19,38 +20,45 @@ using namespace avro;
 
 void function_read_doubles();
 void function_read_string();
+void function_read_array()
+{
+    std::ifstream ifs("cpx_array.json");
+    avro::ValidSchema cpxSchema;
+
+    avro::compileJsonSchema(ifs, cpxSchema);
+
+    std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
+    avro::EncoderPtr e = avro::validatingEncoder(cpxSchema, avro::binaryEncoder());
+    e->init(*out);
+
+    cpxSchema.toJson(std::clog);
+
+    std::vector<std::string> string_vector{{"hello"}, {"world"}};
+    avro::encode(*e, string_vector);
+
+    std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(*out);
+    avro::DecoderPtr d = avro::validatingDecoder(cpxSchema, avro::binaryDecoder());
+    d->init(*in);
+
+    std::vector<std::string> vd;
+
+    avro::decode(*d, vd);
+    std::clog << "array size " << vd.size() << std::endl;
+
+    for (const auto& item : vd)
+    {
+        std::clog << item << std::endl;
+    }
+}
 void function_read_dynamic_schema();
 
 int main()
 {
-    //    std::ifstream ifs("cpx.json");
-    //    avro::ValidSchema cpxSchema;
-
-    //    avro::compileJsonSchema(ifs, cpxSchema);
-
-    //    std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
-    //    avro::EncoderPtr e = avro::validatingEncoder(cpxSchema, avro::binaryEncoder());
-    //    e->init(*out);
-    //    std::string str{"hello"};
-    //    std::string strW{"world"};
-
-    //    avro::encode(*e, str);
-    //    avro::encode(*e, strW);
-
-    //    std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(*out);
-    //    avro::DecoderPtr d = avro::validatingDecoder(cpxSchema, avro::binaryDecoder());
-    //    d->init(*in);
-
-    //    std::string strDecoded;
-    //    std::string strWDecoded;
-    //    avro::decode(*d, strDecoded);
-    //    avro::decode(*d, strWDecoded);
-    //    std::cout << strDecoded << std::endl;
-    //    std::cout << strWDecoded << std::endl;
 
     function_read_doubles();
     function_read_string();
     function_read_dynamic_schema();
+    function_read_array();
 
     return 0;
 }

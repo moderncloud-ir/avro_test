@@ -1,6 +1,4 @@
-{                                                                              
-    "type" : "record",                                                         
-             "name" : "cpx",                                                   
-                      "fields"                                                 
-        : [{"name": "re", "type": "double"}, {"name": "im", "type": "double"}] 
-}                                                                              
+{
+    "name": "array",
+    "type":"string"
+}
