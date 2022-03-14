@@ -11,6 +11,7 @@ ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
 
 find_package (Threads REQUIRED)
+find_package(cpp-jwt REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -59,5 +60,6 @@ target_link_libraries(${PROJECT_NAME}
   avro
   avrocpp
   avrocpp_s
+  cpp-jwt::cpp-jwt
 
   )
